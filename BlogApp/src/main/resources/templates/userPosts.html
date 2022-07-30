@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<meta charset="ISO-8859-1">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		<div class="container">
+			<a class="navbar-brand" th:href="@{/home}">BlogApp</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+				data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+				aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+					<li class="nav-item"><a th:href="@{/admin/users/}" class="nav-link">Users</a></li>
+					<li class="nav-item"><a th:href="@{/myposts/}" class="nav-link">My posts</a></li>
+					<li class="nav-item"><a th:href="@{/admin/category/}" class="nav-link">Categories</a></li>
+					<li class="nav-item"> <a th:href="@{/mycomments/}" class="nav-link">My
+							comments</a></li>
+					<li class="nav-item"><a th:href="@{/logout}" class="nav-link">Logout</a></li>
+					<li class="nav-item"><a th:href="@{/appCorner}" class="nav-link">App corner</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+<div class="col" th:each="post:${posts}">
+			<div class="card mb-4">
+				<div th:if="${post.PhotoPath != 'none'}">
+					<a th:if="post.PhotoPath != 'none'" href="#!"><img class="card-img-top"
+							th:src="@{${post.photoPath}}" /></a>
+				</div>
+				<div class="card-body">
+					<p class="small text-muted" th:text="${post.createDate}"></p>
+					<a th:href="@{/post/delete/{postId}(postId=${post.id})}">Delete</a>
+					<a th:href="@{/post/share/{postId}(postId=${post.id})}">Share</a>
+					<h2 class="card-title" th:text="${post.title}"></h2>
+					<p class="card-text" th:text="${post.body}"></p>
+					<div class="accordion" th:id=${post.id}>
+						<div class="accordion-item">
+							<h2 class="accordion-header" id="headingOne">
+								<button class="accordion-button" type="button" data-bs-toggle="collapse"
+									th:attr="data-bs-target='#collapse-'+${post.id}" aria-expanded="true"
+									aria-controls="collapseOne">
+									Comments</button>
+							</h2>
+							<div th:id="'collapse-'+${post.id}" class="accordion-collapse collapse"
+								aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+								<form action="#" th:action="@{/comment/save/{postId}(postId=${post.id})}"
+									th:object="${comment}" method="post">
+									<label for="name">Insert comment:</label>
+									<textarea type="text" th:field="*{body}" id="name" placeholder="Name" />
+									<p th:text="${postId}"></p>
+									<input type="submit" value="Comment">
+								</form>
+								<table style="width: 80%" border="1"
+									class="table table-striped table-responsive-md">
+									<tbody>
+										<tr th:each="comment:${post.comments}">
+											<div class="accordion-body">
+												<div>
+													<td>
+														<p th:text="${comment.body}"></p>
+													</td>
+													<td>
+														<p th:text="${comment.createDate}"></p>
+													</td>
+													<td>
+														<a th:href="@{/comment/delete/{commentId}/{postId}(commentId=${comment.id},postId=${post.id})}"
+															class="btn btn-primary btn-sm mb-3">Delete
+															comment</a>
+													</td>
+												</div>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+
+
+				</div>
+				</td>
+			</div>
+		</div>
+	</div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+	integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+	crossorigin="anonymous"></script>
+</html>
