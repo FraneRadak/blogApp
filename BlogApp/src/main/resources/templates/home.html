@@ -83,6 +83,9 @@
 				</div>
 				<div class="card-body">
 					<p class="small text-muted" th:text="${post.createDate}"></p>
+					<p th:text="${post.likes.size()}+' likes'"></p>
+					<a th:unless="${post.isLiked(currentUser)}" th:href="@{/post/like/{id}(id=${post.id})}">Like</a><br>
+					<a th:if="${post.isLiked(currentUser)}" th:href="@{/post/dislike/{id}(id=${post.id})}">Dislike</a><br>
 					<a th:href="@{/userposts/{userId}(userId=${post.user.id})}" th:text="'Creator:'+${post.user.username}"></a><br>
 					<a th:href="@{/post/delete/{postId}(postId=${post.id})}">Delete</a>
 					<a th:href="@{/post/share/{postId}(postId=${post.id})}">Share</a>

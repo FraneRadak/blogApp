@@ -119,9 +119,21 @@ public class PostController {
 		//model.addAttribute("post", post);
 		return "redirect:/home/";
 	}
+	@GetMapping("/dislike/{id}")
+	public String dislike(@PathVariable("id") int postId) {
+		var post=postService.getById(postId);
+		var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String username=((UserDetails)principal).getUsername();
+		var user=userService.findByUsername(username);
+		post.getLikes().remove(user);
+		postService.add(post);
+		//model.addAttribute("post", post);
+		return "redirect:/home/";
+	}
 	@GetMapping("/delete/{id}")
 	public String delete(@PathVariable("id") int postId) {
 		var post=postService.getById(postId);
+		post.getLikes().clear();
 		var user=post.getUser();
 		user.deletePost(post);
 		System.out.println(post.getPhotoPath());

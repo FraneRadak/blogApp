@@ -75,4 +75,7 @@ public class Post {
 		    this.comments = articles;
 		    articles.forEach(article -> article.setPost(this));
 		}
+	 public boolean isLiked(User user) {
+		 return likes.contains(user);
+	 }
 }

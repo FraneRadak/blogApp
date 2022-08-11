@@ -31,13 +31,11 @@ public class RegisterController {
 	@PostMapping
     public String register(@ModelAttribute("user") User user, String email){
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		var role1=new Role(0,"Admin");
-		var role2=new Role(0,"User");
-		roleService.add(role1);
-		roleService.add(role2);
 		var role=roleService.getRoleByName("User");
 		user.getRoles().add(role);
         userService.add(user);
+        
+        
         return "redirect:home/";
     }
 	
