@@ -86,4 +86,8 @@ public class UserServiceImpl implements UserService {
 		}
 		return markSum/numOfMarked;
 	}
+	@Override
+	public boolean ifExist(String username) {
+		return userRepository.findByUsername(username).size()>0;
+	}
 }

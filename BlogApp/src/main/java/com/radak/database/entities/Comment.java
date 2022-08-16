@@ -45,4 +45,7 @@ public class Comment {
 	private Post post;
 
 	String author;
+	public boolean isOwnedBy(User user) {
+		return (this.getAuthor().equals(user.getUsername()) || user.isAdmin());
+	}
 }

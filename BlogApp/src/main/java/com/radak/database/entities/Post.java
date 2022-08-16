@@ -78,4 +78,10 @@ public class Post {
 	 public boolean isLiked(User user) {
 		 return likes.contains(user);
 	 }
+	 public boolean isOwnedBy(User user) {
+		 return (this.getUser().equals(user) || user.isAdmin());
+	 }
+	 public boolean isCreatedBy(User user) {
+		 return this.getUser().equals(user);
+	 }
 }

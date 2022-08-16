@@ -28,9 +28,9 @@
 				aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-					<li class="nav-item"><a th:href="@{/admin/users/}" class="nav-link">Users</a></li>
+					<li class="nav-item"><a th:if="${currentUser.isAdmin()}" th:href="@{/admin/users/}" class="nav-link">Users</a></li>
 					<li class="nav-item"><a th:href="@{/myposts/}" class="nav-link">My posts</a></li>
-					<li class="nav-item"><a th:href="@{/admin/category/}" class="nav-link">Categories</a></li>
+					<li class="nav-item"><a th:if="${currentUser.isAdmin()}" th:href="@{/admin/category/}" class="nav-link">Categories</a></li>
 					<li class="nav-item"> <a th:href="@{/mycomments/}" class="nav-link">My
 							comments</a></li>
 					<li class="nav-item"><a th:href="@{/logout}" class="nav-link">Logout</a></li>
@@ -55,14 +55,10 @@
 					<div class="card-header">Categories</div>
 					<div class="card-body">
 						<div class="row">
-							<div class="col-sm-6">
-								<ul class="list-unstyled mb-0">
-									<li><a th:each="category:${categories}"
+									<a th:each="category:${categories}"
 											th:href="@{/home(size=${posts.size}, page=${pageNumber}, sort=1, filter=${category.id})}"
-											th:text="${category.name}"></a></li>
-									<li></li>
-								</ul>
-							</div>
+											th:text="${category.name}"></a>
+											<br>
 						</div>
 					</div>
 				</div>
@@ -87,7 +83,8 @@
 					<a th:unless="${post.isLiked(currentUser)}" th:href="@{/post/like/{id}(id=${post.id})}">Like</a><br>
 					<a th:if="${post.isLiked(currentUser)}" th:href="@{/post/dislike/{id}(id=${post.id})}">Dislike</a><br>
 					<a th:href="@{/userposts/{userId}(userId=${post.user.id})}" th:text="'Creator:'+${post.user.username}"></a><br>
-					<a th:href="@{/post/delete/{postId}(postId=${post.id})}">Delete</a>
+					<a th:if="${post.isOwnedBy(currentUser)}" th:href="@{/post/delete/{postId}(postId=${post.id})}">Delete</a>
+					<a th:if="${post.isOwnedBy(currentUser)}" th:href="@{/post/update/{postId}(postId=${post.id})}">Update</a>
 					<a th:href="@{/post/share/{postId}(postId=${post.id})}">Share</a>
 					<h2 class="card-title" th:text="${post.title}"></h2>
 					<p class="card-text" th:text="${post.body}"></p>
@@ -118,10 +115,13 @@
 														<p th:text="${comment.body}"></p>
 													</td>
 													<td>
+														<p th:text="'Creator: '+${comment.author}"></p>
+													</td>
+													<td>
 														<p th:text="${comment.createDate}"></p>
 													</td>
 													<td>
-														<a th:href="@{/comment/delete/{commentId}/{postId}(commentId=${comment.id},postId=${post.id})}"
+														<a th:if="${comment.isOwnedBy(currentUser)}"  th:href="@{/comment/delete/{commentId}/{postId}(commentId=${comment.id},postId=${post.id})}"
 															class="btn btn-primary btn-sm mb-3">Delete
 															comment</a>
 													</td>

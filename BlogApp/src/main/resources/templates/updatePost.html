@@ -7,14 +7,17 @@
 <body>
 <form action="#" th:action="@{/post/saveupdated}" th:object="${post}"
 						method="post" enctype="multipart/form-data">
+						 <input type="hidden" th:field="*{id}" />
+						 <input type="hidden" th:field="*{photoPath}" />
 						<label for="title">Title:</label> <input type="text"
 							th:field="*{title}" id="title" placeholder="Title"> <label
 							for="body">Body:</label> <input type="text" th:field="*{body}"
-							id="body" placeholder="Body"> <select
-							th:field="*{category}">
-							<option th:each="category: ${categories}"
-								th:value="${category.id}" th:text="${category.name}" />
-							 <input type="hidden" th:field="*{id}" />
+							id="body" placeholder="Body"> 
+							<select th:field="*{category}" class="form-select" aria-label="Default
+							select example">
+							<option th:each="category: ${categories}" th:value="${category.id}"
+								th:text="${category.name}" />
+						</select>
 						</select> <label>Photos: </label> <input type="file" name="image"
 							accept="image/png, image/jpeg" /> <input type="submit"
 							value="Create">

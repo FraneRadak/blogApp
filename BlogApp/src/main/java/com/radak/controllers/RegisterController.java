@@ -30,13 +30,15 @@ public class RegisterController {
 	}
 	@PostMapping
     public String register(@ModelAttribute("user") User user, String email){
+		if(userService.ifExist(user.getUsername())) {
+			return "redirect:registration/";
+		}
+		else {
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		var role=roleService.getRoleByName("User");
 		user.getRoles().add(role);
         userService.add(user);
-        
-        
         return "redirect:home/";
+		}
     }
-	
 }

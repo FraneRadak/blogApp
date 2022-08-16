@@ -75,7 +75,7 @@ public class User {
 	}
 	public boolean isAdmin() {
 		for (Role r:roles) {
-			if (r.getName()=="Admin") {
+			if (r.getName().equals("Admin")) {
 				return true;
 			}
 		}

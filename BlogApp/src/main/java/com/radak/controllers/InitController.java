@@ -83,4 +83,22 @@ public class InitController {
 		userService.add(user);
 		return "done";
 	}
+	@GetMapping("/testRole")
+	public String testRole(){
+		var user=userService.findById(171);
+		if(user.isAdmin()) {
+			return "True";
+		}
+		return "False";
+	}
+	@GetMapping("/testUser")
+	public boolean testUser(){
+		try {
+		var user= userService.findByUsername("user5");
+		}
+		catch(IndexOutOfBoundsException e) {
+			return false;
+		}
+		return true;
+	}
 }

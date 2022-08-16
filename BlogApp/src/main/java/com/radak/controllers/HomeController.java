@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +24,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.radak.database.entities.Comment;
 import com.radak.database.entities.Post;
+import com.radak.database.entities.User;
+import com.radak.exceptions.OutOfAuthorities;
+import com.radak.exceptions.SomethingWentWrongException;
 import com.radak.services.CategoryService;
 import com.radak.services.CommentService;
 import com.radak.services.PostService;
@@ -54,10 +58,15 @@ public class HomeController {
         Page<Post> postPage=postService.findPaginated(PageRequest.of(currentPage-1, pageSize),stateReminder.getSort(),stateReminder.getFilter());
 		var comment=new Comment();
 		var post=new Post();
-		var category=categoryService.getById(4);
 		var categories=categoryService.getAllCategories();
 		var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		var user=userService.findByUsername(((UserDetails)principal).getUsername());
+		User user=null;
+		try {
+		user=userService.findByUsername(((UserDetails)principal).getUsername());
+		}
+		catch (IndexOutOfBoundsException e) {
+			throw new SomethingWentWrongException("Logged user not found, please re-login and try again");
+		}
 		model.addAttribute("currentUser",user);
 		model.addAttribute("posts", postPage);
 		model.addAttribute("comment", comment);
@@ -86,7 +95,13 @@ public class HomeController {
 	public String appCorner(Model model) {
 		var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String username=((UserDetails)principal).getUsername();
-		var user=userService.findByUsername(username);
+		User user=null;
+		try {
+		user=userService.findByUsername(username);
+		}
+		catch (IndexOutOfBoundsException e) {
+			throw new SomethingWentWrongException("Logged user not found, please re-login and try again");
+		}
 		model.addAttribute("numOfPosts", postService.getNum());
 		model.addAttribute("currentUser", user);
 		model.addAttribute("appSum", userService.getAppSum());
@@ -94,15 +109,35 @@ public class HomeController {
 		model.addAttribute("averageMark", userService.getAverageMark());
 		return "appCorner";
 	}
-	
 	@PostMapping("/leavereview")
 	public String setReview(Model model,@RequestParam("mark") String mark) {
 		int intMark=Integer.parseInt(mark);
 		var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String username=((UserDetails)principal).getUsername();
-		var user=userService.findByUsername(username);
+		User user=null;
+		try {
+		user=userService.findByUsername(username);
+		}
+		catch (IndexOutOfBoundsException e) {
+			throw new SomethingWentWrongException("Logged user not found, please re-login and try again");
+		}
 		user.setReview(intMark);
 		userService.add(user);
 		return "redirect:/appCorner";
+	}
+	@ExceptionHandler(value = { OutOfAuthorities.class })
+	public String handleOutOfAuthorities(OutOfAuthorities exception, Model model) {
+
+		String errorMsg = exception.getLocalizedMessage();
+		model.addAttribute("errorMsg", errorMsg);
+		return "OutOfAuthorities";
+	}
+
+	@ExceptionHandler(value = { SomethingWentWrongException.class })
+	public String handleSomethingWentWrongException(SomethingWentWrongException exception, Model model) {
+
+		String errorMsg = exception.getLocalizedMessage();
+		model.addAttribute("errorMsg", errorMsg);
+		return "SomethingWentWrong";
 	}
 }

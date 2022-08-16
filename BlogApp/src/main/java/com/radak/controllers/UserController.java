@@ -4,10 +4,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.radak.database.entities.Comment;
+import com.radak.exceptions.OutOfAuthorities;
+import com.radak.exceptions.SomethingWentWrongException;
 import com.radak.services.PostService;
 import com.radak.services.UserService;
 
@@ -24,16 +27,41 @@ public class UserController {
 		model.addAttribute("comment", comment);
 		var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String username=((UserDetails)principal).getUsername();
+		if(username.equals(null)) {
+			throw new SomethingWentWrongException("Logged user not found, please re-login and try again");
+		}
 		var user=userService.findByUsername(username);
 		model.addAttribute("posts", user.getPosts());
+		model.addAttribute("currentUser", user);
 		return "myPosts";
 	}
 	@GetMapping("userposts/{userId}")
 	private String getUserPosts(@PathVariable("userId") int userId,Model model) {
 		var comment=new Comment();
+		var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String username=((UserDetails)principal).getUsername();
+		if(username.equals(null)) {
+			throw new SomethingWentWrongException("Logged user not found, please re-login and try again");
+		}
+		var currentUser=userService.findByUsername(username);
 		var user=userService.findById(userId);
 		model.addAttribute("comment", comment);
+		model.addAttribute("currentUser", currentUser);
 		model.addAttribute("posts", user.getPosts());
 		return "userPosts";
+	}
+	@ExceptionHandler(value = { OutOfAuthorities.class })
+	public String handleOutOfAuthorities(OutOfAuthorities exception, Model model) {
+
+		String errorMsg = exception.getLocalizedMessage();
+		model.addAttribute("errorMsg", errorMsg);
+		return "OutOfAuthorities";
+	}
+	@ExceptionHandler(value = { SomethingWentWrongException.class })
+	public String handleSomethingWentWrongException(SomethingWentWrongException exception, Model model) {
+
+		String errorMsg = exception.getLocalizedMessage();
+		model.addAttribute("errorMsg", errorMsg);
+		return "SomethingWentWrong";
 	}
 }

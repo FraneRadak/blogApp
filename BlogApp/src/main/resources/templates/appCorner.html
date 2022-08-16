@@ -15,9 +15,9 @@
 				aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-					<li class="nav-item"><a th:href="@{/admin/users/}" class="nav-link">Users</a></li>
+					<li class="nav-item"><a th:if="${currentUser.isAdmin()}" th:href="@{/admin/users/}" class="nav-link">Users</a></li>
 					<li class="nav-item"><a th:href="@{/myposts/}" class="nav-link">My posts</a></li>
-					<li class="nav-item"><a th:href="@{/category/}" class="nav-link">Categories</a></li>
+					<li class="nav-item"><a th:if="${currentUser.isAdmin()}" th:href="@{/category/}" class="nav-link">Categories</a></li>
 					<li class="nav-item"> <a th:href="@{/mycomments/}" class="nav-link">My
 							comments</a></li>
 					<li class="nav-item"><a th:href="@{/logout}" class="nav-link">Logout</a></li>
