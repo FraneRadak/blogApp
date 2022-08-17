@@ -84,7 +84,7 @@
 					<a th:if="${post.isLiked(currentUser)}" th:href="@{/post/dislike/{id}(id=${post.id})}">Dislike</a><br>
 					<a th:href="@{/userposts/{userId}(userId=${post.user.id})}" th:text="'Creator:'+${post.user.username}"></a><br>
 					<a th:if="${post.isOwnedBy(currentUser)}" th:href="@{/post/delete/{postId}(postId=${post.id})}">Delete</a>
-					<a th:if="${post.isOwnedBy(currentUser)}" th:href="@{/post/update/{postId}(postId=${post.id})}">Update</a>
+					<a th:if="${post.isCreatedBy(currentUser)}" th:href="@{/post/update/{postId}(postId=${post.id})}">Update</a>
 					<a th:href="@{/post/share/{postId}(postId=${post.id})}">Share</a>
 					<h2 class="card-title" th:text="${post.title}"></h2>
 					<p class="card-text" th:text="${post.body}"></p>

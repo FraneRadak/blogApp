@@ -40,8 +40,9 @@ public class AdminController {
 			roles.remove(role);
 		}
 		user.setRoles(roles);
+		user.clearPosts();
 		userService.delete(user);
-		return "redirect:/home/";
+		return "redirect:/admin/users/";
 	}
 	@GetMapping("/category")
 	public String getAll(Model model) {

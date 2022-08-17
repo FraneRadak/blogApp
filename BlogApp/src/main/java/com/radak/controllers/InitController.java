@@ -75,13 +75,9 @@ public class InitController {
 	}
 	@GetMapping("/fix")
 	public String fix(){
-		var user=userService.findByUsername("admin");
-		var post=postService.getById(30);
-		var posts=user.getPosts();
-		posts.add(post);
-		user.setPosts(posts);
-		userService.add(user);
-		return "done";
+		var role2=new Role(0,"User");
+		roleService.add(role2);
+		return "created";
 	}
 	@GetMapping("/testRole")
 	public String testRole(){

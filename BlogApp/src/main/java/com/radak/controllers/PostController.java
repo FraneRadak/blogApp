@@ -103,7 +103,6 @@ public class PostController {
 		String username = ((UserDetails) principal).getUsername();
 		DateFormat formatter = new SimpleDateFormat("MMM d, yyyy HH:mm a");
 		Calendar calendar = Calendar.getInstance();
-		System.out.println(calendar.getTime());
 		post.setCreateDate(formatter.format(calendar.getTime()));
 		User user = null;
 		try {
@@ -115,7 +114,6 @@ public class PostController {
 		posts.add(post);
 		user.addPosts(posts);
 		userService.add(user);
-		System.out.println("saved");
 		return "redirect:/home/";
 	}
 

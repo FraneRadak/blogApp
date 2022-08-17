@@ -51,8 +51,6 @@ public class HomeController {
 		if (filterId.isPresent()) {
 			stateReminder.setFilter(Integer.parseInt(filterId.get()));
 		}
-		System.out.println(stateReminder.getSort());
-		System.out.println(stateReminder.getFilter());
 		int currentPage = page.orElse(1);
         int pageSize = size.orElse(5);
         Page<Post> postPage=postService.findPaginated(PageRequest.of(currentPage-1, pageSize),stateReminder.getSort(),stateReminder.getFilter());

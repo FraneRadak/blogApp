@@ -81,4 +81,9 @@ public class User {
 		}
 		return false;
 	}
+	public void clearPosts() {
+		for (Post post:posts) {
+			post.getLikes().clear();
+		}
+	}
 }
