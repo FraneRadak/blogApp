@@ -30,8 +30,6 @@ public class RegisterController {
 	}
 	@PostMapping
     public String register(@ModelAttribute("user") User user, String email){
-		System.out.println(user.getEmail());
-		/*
 		if(userService.ifExist(user.getUsername())) {
 			return "redirect:registration/";
 		}
@@ -41,8 +39,7 @@ public class RegisterController {
 		var role=roleService.getRoleByName("User");
 		user.getRoles().add(role);
         userService.add(user);
-        */
         return "redirect:home/";
-		}
     }
+}
 }
