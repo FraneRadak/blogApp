@@ -57,6 +57,7 @@ public class User {
 	private Set<Post> posts=new HashSet<>();
 	@Column(name="review")
 	private int review;
+	private boolean block;
 	public void addPosts(Set<Post> articles) {
 	    this.posts = articles;
 	    articles.forEach(article -> article.setUser(this));

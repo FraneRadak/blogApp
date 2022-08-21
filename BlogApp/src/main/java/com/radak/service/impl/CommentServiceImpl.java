@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.radak.database.entities.Category;
 import com.radak.database.entities.Comment;
 import com.radak.database.repositories.CommentRepository;
+import com.radak.exceptions.SomethingWentWrongException;
 import com.radak.services.CommentService;
 
 import lombok.AllArgsConstructor;
@@ -26,6 +27,9 @@ public class CommentServiceImpl implements CommentService{
 		Comment comment=null;
 		if (optional.isPresent()) {
 			comment=optional.get();
+		}
+		else {
+			throw new SomethingWentWrongException("Comment is not found,please try again later");
 		}
 		return comment;
 	}

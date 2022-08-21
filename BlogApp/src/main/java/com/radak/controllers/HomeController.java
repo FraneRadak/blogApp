@@ -9,8 +9,10 @@ import java.util.stream.IntStream;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -27,6 +29,7 @@ import com.radak.database.entities.Post;
 import com.radak.database.entities.User;
 import com.radak.exceptions.OutOfAuthorities;
 import com.radak.exceptions.SomethingWentWrongException;
+import com.radak.exceptions.YourAccountIsBlocked;
 import com.radak.services.CategoryService;
 import com.radak.services.CommentService;
 import com.radak.services.PostService;
@@ -58,12 +61,9 @@ public class HomeController {
 		var post=new Post();
 		var categories=categoryService.getAllCategories();
 		var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		User user=null;
-		try {
-		user=userService.findByUsername(((UserDetails)principal).getUsername());
-		}
-		catch (IndexOutOfBoundsException e) {
-			throw new SomethingWentWrongException("Logged user not found, please re-login and try again");
+		var user=userService.findByUsername(((UserDetails)principal).getUsername());
+		if(user.isBlock()) {
+			throw new YourAccountIsBlocked("Admin block your account,for more info please contanct admin at admin@gmail.com");
 		}
 		model.addAttribute("currentUser",user);
 		model.addAttribute("posts", postPage);
@@ -84,6 +84,10 @@ public class HomeController {
 	public String getMyComments(Model model) {
 		var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String username=((UserDetails)principal).getUsername();
+		var user=userService.findByUsername(username);
+		if(user.isBlock()) {
+			throw new YourAccountIsBlocked("Admin block your account,for more info please contanct admin at admin@gmail.com");
+		}
 		var myComments=commentService.findMyComments(username);
 		model.addAttribute("comments", myComments);
 		return "mycomments";
@@ -93,12 +97,9 @@ public class HomeController {
 	public String appCorner(Model model) {
 		var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String username=((UserDetails)principal).getUsername();
-		User user=null;
-		try {
-		user=userService.findByUsername(username);
-		}
-		catch (IndexOutOfBoundsException e) {
-			throw new SomethingWentWrongException("Logged user not found, please re-login and try again");
+		var user=userService.findByUsername(username);
+		if(user.isBlock()) {
+			throw new YourAccountIsBlocked("Admin block your account,for more info please contanct admin at admin@gmail.com");
 		}
 		model.addAttribute("numOfPosts", postService.getNum());
 		model.addAttribute("currentUser", user);
@@ -112,30 +113,12 @@ public class HomeController {
 		int intMark=Integer.parseInt(mark);
 		var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String username=((UserDetails)principal).getUsername();
-		User user=null;
-		try {
-		user=userService.findByUsername(username);
-		}
-		catch (IndexOutOfBoundsException e) {
-			throw new SomethingWentWrongException("Logged user not found, please re-login and try again");
+		var user=userService.findByUsername(username);
+		if(user.isBlock()) {
+			throw new YourAccountIsBlocked("Admin block your account,for more info please contanct admin at admin@gmail.com");
 		}
 		user.setReview(intMark);
 		userService.add(user);
 		return "redirect:/appCorner";
-	}
-	@ExceptionHandler(value = { OutOfAuthorities.class })
-	public String handleOutOfAuthorities(OutOfAuthorities exception, Model model) {
-
-		String errorMsg = exception.getLocalizedMessage();
-		model.addAttribute("errorMsg", errorMsg);
-		return "OutOfAuthorities";
-	}
-
-	@ExceptionHandler(value = { SomethingWentWrongException.class })
-	public String handleSomethingWentWrongException(SomethingWentWrongException exception, Model model) {
-
-		String errorMsg = exception.getLocalizedMessage();
-		model.addAttribute("errorMsg", errorMsg);
-		return "SomethingWentWrong";
 	}
 }

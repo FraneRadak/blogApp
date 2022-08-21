@@ -15,7 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ExceptionHandler;
+//import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +28,7 @@ import com.radak.database.entities.Post;
 import com.radak.database.entities.User;
 import com.radak.exceptions.OutOfAuthorities;
 import com.radak.exceptions.SomethingWentWrongException;
+import com.radak.exceptions.YourAccountIsBlocked;
 import com.radak.services.CategoryService;
 import com.radak.services.CommentService;
 import com.radak.services.PostService;
@@ -59,9 +60,6 @@ public class PostController {
 		var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		var newPost = new Post();
 		var oldPost = postService.getById(postId);
-		if (oldPost == null) {
-			throw new SomethingWentWrongException("Post is not found,please try again later");
-		}
 		newPost.setTitle(oldPost.getTitle());
 		newPost.setBody(oldPost.getBody());
 		newPost.setPhotoPath(oldPost.getPhotoPath());
@@ -70,11 +68,9 @@ public class PostController {
 		Calendar calendar = Calendar.getInstance();
 		newPost.setCreateDate(formatter.format(calendar.getTime()));
 		String username = ((UserDetails) principal).getUsername();
-		User user = null;
-		try {
-			user = userService.findByUsername(username);
-		} catch (IndexOutOfBoundsException e) {
-			throw new SomethingWentWrongException("Logged user not found, please re-login and try again");
+		var user = userService.findByUsername(username);
+		if(user.isBlock()) {
+			throw new YourAccountIsBlocked("Admin block your account,for more info please contanct admin at admin@gmail.com");	
 		}
 		var posts = user.getPosts();
 		posts.add(newPost);
@@ -104,11 +100,9 @@ public class PostController {
 		DateFormat formatter = new SimpleDateFormat("MMM d, yyyy HH:mm a");
 		Calendar calendar = Calendar.getInstance();
 		post.setCreateDate(formatter.format(calendar.getTime()));
-		User user = null;
-		try {
-			user = userService.findByUsername(username);
-		} catch (IndexOutOfBoundsException e) {
-			throw new SomethingWentWrongException("Logged user not found, please re-login and try again");
+		var user = userService.findByUsername(username);
+		if(user.isBlock()) {
+			throw new YourAccountIsBlocked("Admin block your account,for more info please contanct admin at admin@gmail.com");	
 		}
 		var posts = user.getPosts();
 		posts.add(post);
@@ -125,9 +119,6 @@ public class PostController {
 	@GetMapping("/{id}")
 	public String postDetails(@PathVariable("id") int postId, Model model) {
 		var post = postService.getById(postId);
-		if (post == null) {
-			throw new SomethingWentWrongException("Post is not found,please try again later");
-		}
 		model.addAttribute("post", post);
 		return "postDetails";
 	}
@@ -135,16 +126,11 @@ public class PostController {
 	@GetMapping("/like/{id}")
 	public String like(@PathVariable("id") int postId) {
 		var post = postService.getById(postId);
-		if (post == null) {
-			throw new SomethingWentWrongException("Post is not found,please try again later");
-		}
 		var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String username = ((UserDetails) principal).getUsername();
-		User user = null;
-		try {
-			user = userService.findByUsername(username);
-		} catch (IndexOutOfBoundsException e) {
-			throw new SomethingWentWrongException("Logged user not found, please re-login and try again");
+		var user = userService.findByUsername(username);
+		if(user.isBlock()) {
+			throw new YourAccountIsBlocked("Admin block your account,for more info please contanct admin at admin@gmail.com");
 		}
 		post.getLikes().add(user);
 		postService.add(post);
@@ -155,16 +141,11 @@ public class PostController {
 	@GetMapping("/dislike/{id}")
 	public String dislike(@PathVariable("id") int postId) {
 		var post = postService.getById(postId);
-		if (post == null) {
-			throw new SomethingWentWrongException("Post is not found,please try again later");
-		}
 		var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String username = ((UserDetails) principal).getUsername();
-		User user = null;
-		try {
-			user = userService.findByUsername(username);
-		} catch (IndexOutOfBoundsException e) {
-			throw new SomethingWentWrongException("Logged user not found, please re-login and try again");
+		var user = userService.findByUsername(username);
+		if(user.isBlock()) {
+			throw new YourAccountIsBlocked("Admin block your account,for more info please contanct admin at admin@gmail.com");
 		}
 		post.getLikes().remove(user);
 		postService.add(post);
@@ -174,16 +155,11 @@ public class PostController {
 	@GetMapping("/delete/{id}")
 	public String delete(@PathVariable("id") int postId) {
 		var post = postService.getById(postId);
-		if (post == null) {
-			throw new SomethingWentWrongException("Post is not found,please try again later");
-		}
 		var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String username = ((UserDetails) principal).getUsername();
-		User currentUser = null;
-		try {
-			currentUser = userService.findByUsername(username);
-		} catch (IndexOutOfBoundsException e) {
-			throw new SomethingWentWrongException("Logged user not found, please re-login and try again");
+		var currentUser = userService.findByUsername(username);
+		if(currentUser.isBlock()) {
+			return "Youareblocked";
 		}
 		if (!post.isOwnedBy(currentUser)) {
 			throw new OutOfAuthorities("You dont have enough authorities to do this");
@@ -210,16 +186,11 @@ public class PostController {
 	public String updatePost(@PathVariable("id") int postId, Model model) {
 		var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String username = ((UserDetails) principal).getUsername();
-		User user = null;
-		try {
-			user = userService.findByUsername(username);
-		} catch (IndexOutOfBoundsException e) {
-			throw new SomethingWentWrongException("Logged user not found, please re-login and try again");
+		var user = userService.findByUsername(username);
+		if(user.isBlock()) {
+			throw new YourAccountIsBlocked("Admin block your account,for more info please contanct admin at admin@gmail.com");	
 		}
 		var post = postService.getById(postId);
-		if (post == null) {
-			throw new SomethingWentWrongException("Post is not found,please try again later");
-		}
 		if (!post.isOwnedBy(user)) {
 			throw new OutOfAuthorities("You dont have enough authorities to do this");
 		}
@@ -233,16 +204,9 @@ public class PostController {
 			BindingResult result) {
 		var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String username = ((UserDetails) principal).getUsername();
-		User user = null;
-		try {
-			user = userService.findByUsername(username);
-		} catch (IndexOutOfBoundsException e) {
-			throw new SomethingWentWrongException("Logged user not found, please re-login and try again");
-		}
+		
+		var user = userService.findByUsername(username);
 		var oldPost = postService.getById(post.getId());
-		if (oldPost == null) {
-			throw new SomethingWentWrongException("Post is not found,please try again later");
-		}
 		if (!oldPost.isOwnedBy(user)) {
 			throw new OutOfAuthorities("You dont have enough authorities to do this");
 		}
@@ -267,20 +231,5 @@ public class PostController {
 		user.replacePosts(oldPost);
 		userService.add(user);
 		return "redirect:/home/";
-	}
-
-	@ExceptionHandler(value = { OutOfAuthorities.class })
-	public String handleOutOfAuthorities(OutOfAuthorities exception, Model model) {
-
-		String errorMsg = exception.getLocalizedMessage();
-		model.addAttribute("errorMsg", errorMsg);
-		return "OutOfAuthorities";
-	}
-	@ExceptionHandler(value = { SomethingWentWrongException.class })
-	public String handleSomethingWentWrongException(SomethingWentWrongException exception, Model model) {
-
-		String errorMsg = exception.getLocalizedMessage();
-		model.addAttribute("errorMsg", errorMsg);
-		return "SomethingWentWrong";
 	}
 }

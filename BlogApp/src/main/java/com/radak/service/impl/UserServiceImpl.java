@@ -17,6 +17,8 @@ import com.radak.database.entities.Role;
 import com.radak.database.entities.User;
 import com.radak.database.repositories.RoleRepository;
 import com.radak.database.repositories.UserRepository;
+import com.radak.exceptions.SomethingWentWrongException;
+import com.radak.exceptions.YourAccountIsBlocked;
 import com.radak.services.RoleService;
 import com.radak.services.UserService;
 
@@ -35,15 +37,26 @@ public class UserServiceImpl implements UserService {
 	}
 	@Override
 	public User findByUsername(String username) {
+		try {
+		return userRepository.findByUsername(username).get(0);
+		}
+		catch (IndexOutOfBoundsException e) {
+			throw new SomethingWentWrongException("Logged user not found, please re-login and try again");
+		}
+	}
+	@Override
+	public User findByUsernameForLogin(String username) {
 		return userRepository.findByUsername(username).get(0);
 	}
-
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = this.findByUsername(username);
-        if(user == null) {
-            throw new UsernameNotFoundException("Invalid username or password");
-        }
+		User user=null;
+		try {
+		user = this.findByUsernameForLogin(username);
+		}
+	 catch (IndexOutOfBoundsException e) {
+		throw new UsernameNotFoundException("Invalid username or password");
+	}
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),mapRolesToAuthorities(user.getRoles()));
 	}
 	private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {

@@ -39,7 +39,8 @@
   <p th:text="${user.firstName}"></p>
   <p th:text="${user.lastName}"></p>
   <p th:text="${user.username}"></p>
-  <a th:href="@{/admin/user/delete/{id}(id=${user.id})}" class="nav-link">Delete</a>
+  <a th:unless="${user.block}" th:href="@{/admin/user/block/{id}(id=${user.id})}" class="nav-link">Block account</a>
+  <a th:if="${user.block}" th:href="@{/admin/user/unblock/{id}(id=${user.id})}" class="nav-link">Unblock account</a>
   </div>
   </li>
 </ul>

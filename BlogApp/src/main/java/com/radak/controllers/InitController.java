@@ -49,14 +49,14 @@ public class InitController {
 	@GetMapping("/createRoles")
 	public String createRoles() {
 		var role1=new Role(0,"Admin");
-		var role2=new Role(0,"User");
+		//var role2=new Role(0,"User");
 		roleService.add(role1);
-		roleService.add(role2);
+		//roleService.add(role2);
 		return "created";
 	}
 	@GetMapping("/createUser")
 	public String createUser() {
-		var admin=new User(0,"admin@java.com",passwordEncoder.encode("admin"),"admin","admin","admin",null,null,0);
+		var admin=new User(0,"admin@java.com",passwordEncoder.encode("admin"),"admin","admin","admin",null,null,0,false);
 		userService.add(admin);
 		return "created";
 	}

@@ -20,6 +20,7 @@ import com.radak.database.entities.Category;
 import com.radak.database.entities.Post;
 import com.radak.database.repositories.CategoryRepository;
 import com.radak.database.repositories.PostRepository;
+import com.radak.exceptions.SomethingWentWrongException;
 import com.radak.services.CategoryService;
 import com.radak.services.PostService;
 
@@ -48,6 +49,9 @@ public class PostServiceImpl implements PostService {
 		Post post = null;
 		if (optional.isPresent()) {
 			post = optional.get();
+		}
+		else {
+			throw new SomethingWentWrongException("Post is not found,please try again later");
 		}
 		return post;
 	}
@@ -132,7 +136,6 @@ public class PostServiceImpl implements PostService {
 		}
 		for (Post post : postPage) {
 			posts.add(post);
-			System.out.println(post.getCategory().getName());
 		}
 		Page<Post> postPage2 = new PageImpl<Post>(posts, PageRequest.of(currentPage, pageSize), postRepository.count());
 		return postPage2;

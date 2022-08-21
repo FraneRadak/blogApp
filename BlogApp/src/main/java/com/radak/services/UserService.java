@@ -16,4 +16,5 @@ public interface UserService extends UserDetailsService {
 	long numOfUsers();
 	float getAverageMark();
 	boolean ifExist(String username);
+	public User findByUsernameForLogin(String username);
 }
