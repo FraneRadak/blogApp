@@ -61,10 +61,7 @@ public class HomeController {
 		var post=new Post();
 		var categories=categoryService.getAllCategories();
 		var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		var user=userService.findByUsername(((UserDetails)principal).getUsername());
-		if(user.isBlock()) {
-			throw new YourAccountIsBlocked("Admin block your account,for more info please contanct admin at admin@gmail.com");
-		}
+		var user=userService.getValidUser(((UserDetails)principal).getUsername());
 		model.addAttribute("currentUser",user);
 		model.addAttribute("posts", postPage);
 		model.addAttribute("comment", comment);
@@ -84,23 +81,17 @@ public class HomeController {
 	public String getMyComments(Model model) {
 		var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String username=((UserDetails)principal).getUsername();
-		var user=userService.findByUsername(username);
-		if(user.isBlock()) {
-			throw new YourAccountIsBlocked("Admin block your account,for more info please contanct admin at admin@gmail.com");
-		}
+		var user=userService.getValidUser(username);
 		var myComments=commentService.findMyComments(username);
 		model.addAttribute("comments", myComments);
+		model.addAttribute("currentUser", user);
 		return "mycomments";
 	}
-	
 	@GetMapping("/appCorner")
 	public String appCorner(Model model) {
 		var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String username=((UserDetails)principal).getUsername();
-		var user=userService.findByUsername(username);
-		if(user.isBlock()) {
-			throw new YourAccountIsBlocked("Admin block your account,for more info please contanct admin at admin@gmail.com");
-		}
+		var user=userService.getValidUser(username);
 		model.addAttribute("numOfPosts", postService.getNum());
 		model.addAttribute("currentUser", user);
 		model.addAttribute("appSum", userService.getAppSum());
@@ -113,10 +104,7 @@ public class HomeController {
 		int intMark=Integer.parseInt(mark);
 		var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String username=((UserDetails)principal).getUsername();
-		var user=userService.findByUsername(username);
-		if(user.isBlock()) {
-			throw new YourAccountIsBlocked("Admin block your account,for more info please contanct admin at admin@gmail.com");
-		}
+		var user=userService.getValidUser(username);
 		user.setReview(intMark);
 		userService.add(user);
 		return "redirect:/appCorner";

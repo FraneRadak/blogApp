@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.radak.database.entities.Comment;
 import com.radak.exceptions.OutOfAuthorities;
@@ -43,17 +44,8 @@ public class CommentController {
 	public String insertComment(@ModelAttribute("comment")Comment comment,@PathVariable(value="postId") int postId) {
 		var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String username=((UserDetails)principal).getUsername();
-		if (username.equals(null)) {
-			throw new SomethingWentWrongException("Logged user not found, please re-login and try again");
-		}
-		var user=userService.findByUsername(username);
-		if(user.isBlock()) {
-			throw new YourAccountIsBlocked("Admin block your account,for more info please contanct admin at admin@gmail.com");
-		}
-		DateFormat formatter = new SimpleDateFormat("MMM d, yyyy HH:mm a");
-		Calendar calendar=Calendar.getInstance();
-		comment.setCreateDate(formatter.format(calendar.getTime()));
-		comment.setAuthor(username);
+		var user=userService.getValidUser(username);
+		comment=commentService.setDefaultCommentData(user, comment);
 		var post=postService.getById(postId);
 		var comments=post.getComments();
 		comments.add(comment);
@@ -65,23 +57,33 @@ public class CommentController {
 	public String deleteComment(@PathVariable("commentId") int commentId,@PathVariable("postId") int postId) {
 		var post=postService.getById(postId);
 		var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		var comment=commentService.getById(commentId);
-		var comments=post.getComments();
 		String username=((UserDetails)principal).getUsername();
-		if (username.equals(null)) {
-			throw new SomethingWentWrongException("Logged user not found, please re-login and try again");
-		}
-		var user=userService.findByUsername(username);
-		if(user.isBlock()) {
-			throw new YourAccountIsBlocked("Admin block your account,for more info please contanct admin at admin@gmail.com");
-		}
-		if(!comment.isOwnedBy(user)) {
-			throw new OutOfAuthorities("You dont have enough authorities to do this");
-		}
+		var user=userService.getValidUser(username);
+		var comment=commentService.getValidComment(commentId, user);
+		var comments=post.getComments();
 		comments.remove(comment);
 		post.setComments(comments);
 		postService.add(post);
 		commentService.deleteComment(comment);
+		return "redirect:/home/";
+	}
+	@GetMapping("/update/{id}")
+	public String updateCommentForm(@PathVariable("id") int commentId,Model model) {
+		var comment=commentService.getById(commentId);
+		var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String username=((UserDetails)principal).getUsername();
+		var user=userService.getValidUser(username);
+		if(!comment.isCreatedBy(user)) {
+			throw new OutOfAuthorities("You dont have enough authorities to do this");
+		}
+		model.addAttribute("comment",comment);
+		return "updateComment";
+	}
+	@PostMapping("/saveupdated")
+	public String saveUpdated(@ModelAttribute("comment") Comment comment) {
+		var uComment=commentService.getById(comment.getId());
+		uComment.setBody(comment.getBody());
+		commentService.save(uComment);
 		return "redirect:/home/";
 	}
 }

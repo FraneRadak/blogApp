@@ -1,19 +1,35 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+<link rel="icon" type="image/x-icon" href="static/Assets/favicon.ico" />
+	<!-- Core theme CSS (includes Bootstrap)-->
+<link href="static/CSS/styles.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 <meta charset="ISO-8859-1">
-<title>Employee Management System</title>
- 
-<link rel="stylesheet"
-    href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-</head>
 <body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		<div class="container">
+			<a class="navbar-brand" href="#!">BlogApp</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+				data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+				aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+					<li class="nav-item"><a th:if="${currentUser.isAdmin()}" th:href="@{/admin/users/}" class="nav-link">Users</a></li>
+					<li class="nav-item"><a th:href="@{/myposts/}" class="nav-link">My posts</a></li>
+					<li class="nav-item"><a th:if="${currentUser.isAdmin()}" th:href="@{/admin/category/}" class="nav-link">Categories</a></li>
+					<li class="nav-item"> <a th:href="@{/mycomments/}" class="nav-link">My
+							comments</a></li>
+					<li class="nav-item"><a th:href="@{/logout}" class="nav-link">Logout</a></li>
+					<li class="nav-item"><a th:href="@{/appCorner}" class="nav-link">App corner</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
     <div class="container">
-        <h1>Employee Management System</h1>
-        <hr>
-        <h2>Update Category</h2>
  
-        <form action="#" th:action="@{/category/add}" th:object="${category}"
+        <form action="#" th:action="@{/admin/category/add}" th:object="${category}"
             method="POST">
              
             <!-- Add hidden form field to handle update -->

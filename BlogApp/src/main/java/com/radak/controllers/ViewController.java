@@ -18,12 +18,6 @@ import lombok.AllArgsConstructor;
 @RequestMapping("/admin/")
 public class ViewController {
 	private CategoryService categoryService;
-	@GetMapping("/updateCategory/{id}")
-	public String showUpdateVategoryForm(@PathVariable(value="id") int id, Model model) {
-		var category=categoryService.getById(id);
-		model.addAttribute("category", category);
-		return "updateCategory";
-	}
 	@GetMapping("/createComment/{postId}")
 	public String createComment(@PathVariable(value="postId") int postId,Model model) {
 		var comment=new Comment();

@@ -48,4 +48,7 @@ public class Comment {
 	public boolean isOwnedBy(User user) {
 		return (this.getAuthor().equals(user.getUsername()) || user.isAdmin());
 	}
+	public boolean isCreatedBy(User user) {
+		return this.getAuthor().equals(user.getUsername());
+	}
 }

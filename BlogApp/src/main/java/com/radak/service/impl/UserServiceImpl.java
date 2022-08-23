@@ -103,4 +103,15 @@ public class UserServiceImpl implements UserService {
 	public boolean ifExist(String username) {
 		return userRepository.findByUsername(username).size()>0;
 	}
+	@Override
+	public User getValidUser(String username) {
+		if (username.equals(null)) {
+			throw new SomethingWentWrongException("Logged user not found, please re-login and try again");
+		}
+		var user=this.findByUsername(username);
+		if(user.isBlock()) {
+			throw new YourAccountIsBlocked("Admin block your account,for more info please contanct admin at admin@gmail.com");
+		}
+		return user;
+	}
 }

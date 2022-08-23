@@ -1,6 +1,9 @@
 package com.radak.service.impl;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -11,7 +14,9 @@ import org.springframework.stereotype.Service;
 
 import com.radak.database.entities.Category;
 import com.radak.database.entities.Comment;
+import com.radak.database.entities.User;
 import com.radak.database.repositories.CommentRepository;
+import com.radak.exceptions.OutOfAuthorities;
 import com.radak.exceptions.SomethingWentWrongException;
 import com.radak.services.CommentService;
 
@@ -68,5 +73,23 @@ public class CommentServiceImpl implements CommentService{
 			}
 		}
 		return comments;
+	}
+
+	@Override
+	public Comment setDefaultCommentData(User user,Comment comment) {
+		DateFormat formatter = new SimpleDateFormat("MMM d, yyyy HH:mm a");
+		Calendar calendar=Calendar.getInstance();
+		comment.setCreateDate(formatter.format(calendar.getTime()));
+		comment.setAuthor(user.getUsername());
+		return comment;
+	}
+
+	@Override
+	public Comment getValidComment(int commentId,User user) {
+		var comment=this.getById(commentId);
+		if(!comment.isOwnedBy(user)) {
+			throw new OutOfAuthorities("You dont have enough authorities to do this");
+		}
+		return comment;
 	}
 }

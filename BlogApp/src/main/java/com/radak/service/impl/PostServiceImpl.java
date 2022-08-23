@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -18,8 +19,10 @@ import org.springframework.stereotype.Service;
 
 import com.radak.database.entities.Category;
 import com.radak.database.entities.Post;
+import com.radak.database.entities.User;
 import com.radak.database.repositories.CategoryRepository;
 import com.radak.database.repositories.PostRepository;
+import com.radak.exceptions.OutOfAuthorities;
 import com.radak.exceptions.SomethingWentWrongException;
 import com.radak.services.CategoryService;
 import com.radak.services.PostService;
@@ -144,5 +147,34 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public long getNum() {
 		return postRepository.count();
+	}
+
+	@Override
+	public Post copyPostData(Post newPost,Post oldPost) {
+		newPost.setTitle(oldPost.getTitle());
+		newPost.setBody(oldPost.getBody());
+		newPost.setPhotoPath(oldPost.getPhotoPath());
+		newPost.setCategory(oldPost.getCategory());
+		DateFormat formatter = new SimpleDateFormat("MMM d, yyyy HH:mm a");
+		Calendar calendar = Calendar.getInstance();
+		newPost.setCreateDate(formatter.format(calendar.getTime()));
+		return newPost;
+	}
+
+	@Override
+	public Post setPostDefaultData(Post post) {
+		DateFormat formatter = new SimpleDateFormat("MMM d, yyyy HH:mm a");
+		Calendar calendar = Calendar.getInstance();
+		post.setCreateDate(formatter.format(calendar.getTime()));
+		return post;
+	}
+
+	@Override
+	public Post getOwnedPost(int postId, User user) {
+		var post = this.getById(postId);
+		if (!post.isOwnedBy(user)) {
+			throw new OutOfAuthorities("You dont have enough authorities to do this");
+		}
+		return post;
 	}
 };

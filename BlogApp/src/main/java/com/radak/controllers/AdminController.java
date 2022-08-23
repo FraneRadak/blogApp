@@ -1,5 +1,7 @@
 package com.radak.controllers;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -56,7 +58,16 @@ public class AdminController {
 		model.addAttribute("categories", list);
 		return "allCategories";
 	}
-
+	@GetMapping("/category/update/{id}")
+	public String showUpdateVategoryForm(@PathVariable(value="id") int id, Model model) {
+		var principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String username = ((UserDetails) principal).getUsername();
+		var user=userService.getValidUser(username);
+		model.addAttribute("currentUser",user);
+		var category=categoryService.getById(id);
+		model.addAttribute("category", category);
+		return "updateCategory";
+	}
 	@PostMapping("/category/add")
 	public String addUser(@ModelAttribute("category") Category category) {
 		categoryService.addCategory(category);
