@@ -64,6 +64,8 @@ public class CommentServiceImpl implements CommentService{
 
 	@Override
 	public List<Comment> findMyComments(String username) {
+		return commentRepository.findByAuthor(username);
+		/*
 		List<Comment> comments=new ArrayList();
 		for (Comment comment:commentRepository.findAll()) {
 			System.out.println(username+"-"+comment.getAuthor());
@@ -73,6 +75,7 @@ public class CommentServiceImpl implements CommentService{
 			}
 		}
 		return comments;
+		*/
 	}
 
 	@Override

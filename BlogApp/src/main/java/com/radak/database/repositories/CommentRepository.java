@@ -1,5 +1,7 @@
 package com.radak.database.repositories;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,5 +13,5 @@ import com.radak.database.entities.Comment;
 //@Component
 @Transactional
 public interface CommentRepository extends JpaRepository<Comment, Integer> {
-
+	List<Comment> findByAuthor(String author);
 }
