@@ -155,6 +155,7 @@ public class PostController {
 		var post = postService.getOwnedPost(postId, user);
 		var categories=categoryService.getAllCategories();
 		model.addAttribute("post", post);
+		model.addAttribute("categories", categories);
 		return "updatePost";
 	}
 	@PostMapping("/saveupdated")
@@ -166,6 +167,7 @@ public class PostController {
 		var oldPost=postService.getOwnedPost(post.getId(), user);
 		oldPost.setBody(post.getBody());
 		oldPost.setTitle(post.getTitle());
+		oldPost.setCategory(post.getCategory());
 		String uploadDir = "photos";
 		if(!multipartFile.isEmpty()) {
 		String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());

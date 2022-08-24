@@ -1,5 +1,7 @@
 package com.radak.controllers;
 
+import java.util.regex.Pattern;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,16 +32,14 @@ public class RegisterController {
 	}
 	@PostMapping
     public String register(@ModelAttribute("user") User user, String email){
-		if(userService.ifExist(user.getUsername())) {
-			return "redirect:registration/";
-		}
-		else {
+		var isValid=userService.isValidUser(user);
+		if(isValid) {
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		user.setBlock(false);
 		var role=roleService.getRoleByName("User");
 		user.getRoles().add(role);
         userService.add(user);
-        return "redirect:home/";
-    }
+		}
+		return "redirect:home/";
 }
 }

@@ -101,7 +101,7 @@
 								<form action="#" th:action="@{/comment/save/{postId}(postId=${post.id})}"
 									th:object="${comment}" method="post">
 									<label for="name">Insert comment:</label>
-									<textarea type="text" th:field="*{body}" id="name" placeholder="Name" />
+									<textarea type="text" th:field="*{body}" id="name" placeholder="Name" th:required="required"/>
 									<p th:text="${postId}"></p>
 									<input type="submit" value="Comment">
 								</form>
@@ -171,17 +171,17 @@
 					<form action="#" th:action="@{/post/save}" th:object="${post}" method="post"
 						enctype="multipart/form-data">
 						<div class="input-group mb-3">
-							<input type="text" th:field="*{title}" id="title" placeholder="Title">
+							<input type="text" th:field="*{title}" id="title" placeholder="Title" th:required="required">
 						</div>
 						<div class="form-floating">
 							<textarea type="text" th:field="*{body}" rows="4" cols="50" class="form-control"
-								placeholder="Insert body here" id="floatingTextarea" />
+								placeholder="Insert body here" id="floatingTextarea" th:required="required" />
 							<label for="floatingTextarea">Body</label>
 						</div>
 						<select th:field="*{category}" class="form-select" aria-label="Default
 							select example">
 							<option th:each="category: ${categories}" th:value="${category.id}"
-								th:text="${category.name}" />
+								th:text="${category.name}" th:required="required"/>
 						</select>
 						<div class="mb-3">
 							<input type="file" name="image" accept="image/png, image/jpeg" class="form-control" />

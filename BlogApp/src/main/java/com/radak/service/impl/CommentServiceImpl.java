@@ -38,12 +38,10 @@ public class CommentServiceImpl implements CommentService{
 		}
 		return comment;
 	}
-
 	@Override
 	public void save(Comment comment) {
 		commentRepository.save(comment);
 	}
-
 	@Override
 	public void deletRelatedComments(int postId) {
 	var comments=commentRepository.findAll();
@@ -65,17 +63,6 @@ public class CommentServiceImpl implements CommentService{
 	@Override
 	public List<Comment> findMyComments(String username) {
 		return commentRepository.findByAuthor(username);
-		/*
-		List<Comment> comments=new ArrayList();
-		for (Comment comment:commentRepository.findAll()) {
-			System.out.println(username+"-"+comment.getAuthor());
-			if(comment.getAuthor().equals(username)) {
-				System.out.println("found");
-				comments.add(comment);
-			}
-		}
-		return comments;
-		*/
 	}
 
 	@Override

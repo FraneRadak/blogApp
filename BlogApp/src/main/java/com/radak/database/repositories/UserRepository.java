@@ -15,5 +15,6 @@ import com.radak.database.entities.User;
 public interface UserRepository extends JpaRepository<User,Integer> {
 
 	List<User> findByUsername(String username);
+	List<User> findByEmail(String email);
 
 }

@@ -9,6 +9,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.radak.exceptions.OutOfAuthorities;
 import com.radak.exceptions.SomethingWentWrongException;
+import com.radak.exceptions.UserRegistrationException;
 import com.radak.exceptions.YourAccountIsBlocked;
 @ControllerAdvice
 @Component
@@ -34,4 +35,12 @@ public class ExceptionResolver {
 		model.addAttribute("errorMsg", errorMsg);
 		return "Youareblocked";
 	}
+	@ExceptionHandler(value = { UserRegistrationException.class })
+	public String invalidRegisterData(UserRegistrationException exception, Model model) {
+
+		String errorMsg = exception.getLocalizedMessage();
+		model.addAttribute("errorMsg", errorMsg);
+		return "invalidRegistration";
+	}
+	
 }

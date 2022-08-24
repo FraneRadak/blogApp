@@ -13,7 +13,7 @@
 <body>
 <form action="#" th:action="@{/admin/category/add}" th:object="${category}" method="post">
     <label for="name">Category name:</label>
-    <input type="text" th:field="*{name}" id="name" placeholder="Name">
+    <input type="text" th:field="*{name}" id="name" placeholder="Name"  th:required="required">
     <input type="submit" value="Add Category">   
 </form>
 </body>

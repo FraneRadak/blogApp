@@ -15,7 +15,9 @@ public interface UserService extends UserDetailsService {
 	int getAppSum();
 	long numOfUsers();
 	float getAverageMark();
-	boolean ifExist(String username);
+	boolean ifExistByUsername(String username);
+	boolean ifExistByEmail(String email);
 	public User findByUsernameForLogin(String username);
 	public User getValidUser(String username);
+	public boolean isValidUser(User user);
 }

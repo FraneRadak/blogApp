@@ -96,31 +96,31 @@ h2 {
     <div class="form-section">
       <form th:action="@{/registration}" method="post" th:object="${user}">
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-          <input type="text" th:field="*{firstName}" id="firstname" placeholder="First Name" class = "form-control" autofocus="autofocus">
+          <input type="text" th:field="*{firstName}" id="firstname" placeholder="First Name" class = "form-control" autofocus="autofocus"  th:required="required">
           <label class="mdl-textfield__label" for="sample3">First name</label>
         </div>
         <br/>
         <br/>
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-          <input type="text" th:field="*{lastName}" id="lastname" placeholder=" Last Name">
+          <input type="text" th:field="*{lastName}" id="lastname" placeholder=" Last Name"  th:required="required">
           <label class="mdl-textfield__label" for="sample3">Last name</label>
         </div>
         <br/>
         <br/>
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-          <input type="text" th:field="*{email}" id="email" placeholder="Email">
+          <input type="text" th:field="*{email}" id="email" placeholder="Email"  th:required="required">
           <label class="mdl-textfield__label" for="sample3">Email</label>
         </div>
         <br/>
         <br/>
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-          <input type="text" th:field="*{username}" id="username" placeholder="Username">
+          <input type="text" th:field="*{username}" id="username" placeholder="Username"  th:required="required">
           <label class="mdl-textfield__label" for="sample3">Username</label>
         </div>
         <br/>
         <br/>
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-         <input type="password" th:field="*{password}" id="password" placeholder="Password">
+         <input type="password" th:field="*{password}" id="password" placeholder="Password"  th:required="required">
           <label class="mdl-textfield__label" for="sample3">Password</label>
         </div>
         <br/>

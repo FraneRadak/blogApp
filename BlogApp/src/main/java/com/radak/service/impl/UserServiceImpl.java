@@ -3,6 +3,7 @@ package com.radak.service.impl;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import com.radak.database.entities.User;
 import com.radak.database.repositories.RoleRepository;
 import com.radak.database.repositories.UserRepository;
 import com.radak.exceptions.SomethingWentWrongException;
+import com.radak.exceptions.UserRegistrationException;
 import com.radak.exceptions.YourAccountIsBlocked;
 import com.radak.services.RoleService;
 import com.radak.services.UserService;
@@ -30,6 +32,7 @@ public class UserServiceImpl implements UserService {
 	private UserRepository userRepository;
 	@Autowired
 	private RoleService roleService;
+	 private String eMailRegex="^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^-]+(?:\\.[a-zA-Z0-9_!#$%&'*+/=?`{|}~^-]+)*@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$";
 
 	@Override
 	public void add(User user) {
@@ -100,7 +103,7 @@ public class UserServiceImpl implements UserService {
 		return markSum/numOfMarked;
 	}
 	@Override
-	public boolean ifExist(String username) {
+	public boolean ifExistByUsername(String username) {
 		return userRepository.findByUsername(username).size()>0;
 	}
 	@Override
@@ -113,5 +116,27 @@ public class UserServiceImpl implements UserService {
 			throw new YourAccountIsBlocked("Admin block your account,for more info please contanct admin at admin@gmail.com");
 		}
 		return user;
+	}
+	@Override
+	public boolean isValidUser(User user) {
+		Pattern pattern=Pattern.compile(eMailRegex);
+		var isMailValid=pattern.matcher(user.getEmail()).matches();
+		if (!isMailValid) {
+			throw new UserRegistrationException("Please enter a valid email");
+		}
+		if(user.getPassword().length()<5) {
+			throw new UserRegistrationException("Your password need to be at least 5 characters long");
+		}
+		if (this.ifExistByUsername(user.getUsername())) {
+			throw new UserRegistrationException("Username that you enter is already taken,please choose another one!");
+		}
+		if (this.ifExistByEmail(user.getUsername())) {
+			throw new UserRegistrationException("E-mail that you enter is already taken,please choose another one!");
+		}
+		return true;
+	}
+	@Override
+	public boolean ifExistByEmail(String email) {
+		return userRepository.findByUsername(email).size()>0;
 	}
 }
