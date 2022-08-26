@@ -42,10 +42,11 @@
   <p th:text="${user.firstName}"></p>
   <p th:text="${user.lastName}"></p>
   <p th:text="${user.username}"></p>
-  <a th:unless="${user.block}" th:href="@{/admin/user/block/{id}(id=${user.id})}" class="nav-link">Block account</a>
-  <a th:if="${user.block}" th:href="@{/admin/user/unblock/{id}(id=${user.id})}" class="nav-link">Unblock account</a>
+  <a th:unless="${user.block}" th:href="@{/admin/user/block/{id}(id=${user.id})}" ><iconify-icon icon="akar-icons:block" style="color: red;" width="40" height="40"></iconify-icon></a>
+  <a th:if="${user.block}" th:href="@{/admin/user/unblock/{id}(id=${user.id})}"><iconify-icon icon="gg:unblock" style="color: green;" width="40" height="40"></iconify-icon></a>
   </div>
   </li>
 </ul>
 </body>
+<script src="https://code.iconify.design/iconify-icon/1.0.0-beta.3/iconify-icon.min.js"></script>
 </html>

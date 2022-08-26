@@ -46,11 +46,11 @@
 	<a th:if="${comment.isCreatedBy(currentUser)}"  th:href="@{/comment/update/{commentId}(commentId=${comment.id})}"
 															class="btn btn-primary btn-sm mb-3">Update
 															comment</a>
-	<a   th:href="@{/post/{id}(id=${comment.post.id})}"
-															class="btn btn-primary btn-sm mb-3">Go to post</a>
+	<a   th:href="@{/post/{id}(id=${comment.post.id})}"><iconify-icon icon="icon-park:go-ahead" style="color: green;" width="40" height="40"></iconify-icon></a>
 															
   </div>
   </li>
 </ul>
 </body>
+<script src="https://code.iconify.design/iconify-icon/1.0.0-beta.3/iconify-icon.min.js"></script>
 </html>

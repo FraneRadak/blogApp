@@ -77,6 +77,7 @@ public class CommentController {
 			throw new OutOfAuthorities("You dont have enough authorities to do this");
 		}
 		model.addAttribute("comment",comment);
+		model.addAttribute("currentUser", user);
 		return "updateComment";
 	}
 	@PostMapping("/saveupdated")

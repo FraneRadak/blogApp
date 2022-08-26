@@ -9,22 +9,51 @@
 <meta charset="ISO-8859-1">
 </head>
 <body>
+<br>
+<br>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		<div class="container">
+			<a class="navbar-brand" href="#!">BlogApp</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+				data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+				aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+					<li class="nav-item"><a th:if="${currentUser.isAdmin()}" th:href="@{/admin/users/}" class="nav-link">Users</a></li>
+					<li class="nav-item"><a th:href="@{/myposts/}" class="nav-link">My posts</a></li>
+					<li class="nav-item"><a th:if="${currentUser.isAdmin()}" th:href="@{/admin/category/}" class="nav-link">Categories</a></li>
+					<li class="nav-item"> <a th:href="@{/mycomments/}" class="nav-link">My
+							comments</a></li>
+					<li class="nav-item"><a th:href="@{/logout}" class="nav-link">Logout</a></li>
+					<li class="nav-item"><a th:href="@{/appCorner}" class="nav-link">App corner</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
 <form action="#" th:action="@{/post/saveupdated}" th:object="${post}"
 						method="post" enctype="multipart/form-data">
 						 <input type="hidden" th:field="*{id}" />
 						 <input type="hidden" th:field="*{photoPath}" />
-						<label for="title">Title:</label> <input type="text"
-							th:field="*{title}" id="title" placeholder="Title"> <label
-							for="body">Body:</label> <input type="text" th:field="*{body}"
-							id="body" placeholder="Body"> 
+						 	<p>Title:</p>
+							<input type="text"
+							th:field="*{title}" id="title" placeholder="Title"> 
+							<br>
+							<p>Body:</p>
+							 <input type="text" th:field="*{body}"
+							id="body" placeholder="Body">
+							<br>
+							<p>Please choose category:</p> 
 							<select th:field="*{category}" class="form-select" aria-label="Default
 							select example">
 							<option th:each="category: ${categories}" th:value="${category.id}"
 								th:text="${category.name}" />
 						</select>
+						<br>
+						<p>Please choose photo(optional):</p>
 						</select> <label>Photos: </label> <input type="file" name="image"
-							accept="image/png, image/jpeg" /> <input type="submit"
-							value="Create">
+							accept="image/png, image/jpeg" /> 
+							<br>
+							<input type="submit" value="Update" class="btn btn-outline-success">
 					</form>
 </body>
 </html>

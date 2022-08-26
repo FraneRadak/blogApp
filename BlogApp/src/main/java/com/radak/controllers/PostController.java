@@ -155,6 +155,7 @@ public class PostController {
 		var post = postService.getOwnedPost(postId, user);
 		var categories=categoryService.getAllCategories();
 		model.addAttribute("post", post);
+		model.addAttribute("currentUser", user);
 		model.addAttribute("categories", categories);
 		return "updatePost";
 	}
@@ -182,8 +183,7 @@ public class PostController {
 		else {
 			oldPost.setPhotoPath("none");
 		}
-		user.replacePosts(oldPost);
-		userService.add(user);
+		postService.add(oldPost);
 		return "redirect:/home/";
 	}
 }
