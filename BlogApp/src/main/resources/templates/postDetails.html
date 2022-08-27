@@ -33,7 +33,7 @@
 			<div class="card mb-4">
 				<div th:if="${post.PhotoPath != 'none'}">
 					<a th:if="post.PhotoPath != 'none'" href="#!"><img class="card-img-top"
-							th:src="@{${post.photoPath}}" /></a>
+							th:src="@{${post.photoPath}}"/></a>
 				</div>
 				<div class="card-body">
 					<p class="small text-muted" th:text="${post.createDate}"></p>

@@ -117,7 +117,6 @@ public class PostController {
 		var user=userService.getValidUser(username);
 		post.getLikes().add(user);
 		postService.add(post);
-		// model.addAttribute("post", post);
 		return "redirect:/home/";
 	}
 
@@ -170,15 +169,14 @@ public class PostController {
 		oldPost.setTitle(post.getTitle());
 		oldPost.setCategory(post.getCategory());
 		String uploadDir = "photos";
+		if(!oldPost.getPhotoPath().equals("none") && !postService.isPictureReferenced(oldPost.getPhotoPath(),oldPost.getId())){
+		Util.deletePicture(oldPost);
+		}
 		if(!multipartFile.isEmpty()) {
 		String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 		String fullFilePath = "/photos/" + fileName;
 		oldPost.setPhotoPath(fullFilePath);
-		try {
-			FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		Util.savePicture(oldPost, multipartFile);
 		}
 		else {
 			oldPost.setPhotoPath("none");

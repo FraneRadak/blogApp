@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,5 +34,11 @@ public class Util {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	public static List<Integer> getPageNumbers(int totalPages){
+		List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
+                .boxed()
+                .collect(Collectors.toList());
+		return pageNumbers;
 	}
 }

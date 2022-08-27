@@ -39,8 +39,10 @@
 							th:field="*{title}" id="title" placeholder="Title"> 
 							<br>
 							<p>Body:</p>
-							 <input type="text" th:field="*{body}"
-							id="body" placeholder="Body">
+							 <div class="form-floating">
+							<textarea type="text" th:field="*{body}" rows="4" cols="50" class="form-control"
+								placeholder="Insert body here" id="floatingTextarea" th:required="required" />
+						</div>
 							<br>
 							<p>Please choose category:</p> 
 							<select th:field="*{category}" class="form-select" aria-label="Default

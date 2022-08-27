@@ -1,6 +1,8 @@
 package com.radak.utils;
 
 
+import java.util.Optional;
+
 import lombok.Data;
 
 
@@ -19,6 +21,14 @@ public class StateReminder {
 	}
 	public static void setFilter(int filter) {
 		StateReminder.filter = filter;
+	}
+	public static void setState(Optional<String> sortId,Optional<String> filterId) {
+		if (sortId.isPresent()) {
+			sort=(Integer.parseInt(sortId.get()));
+		}
+		if (filterId.isPresent()) {
+			filter=(Integer.parseInt(filterId.get()));
+		}
 	}
 	
 }

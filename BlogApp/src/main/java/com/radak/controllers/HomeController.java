@@ -30,6 +30,7 @@ import com.radak.database.entities.User;
 import com.radak.exceptions.OutOfAuthorities;
 import com.radak.exceptions.SomethingWentWrongException;
 import com.radak.exceptions.YourAccountIsBlocked;
+import com.radak.service.impl.Util;
 import com.radak.services.CategoryService;
 import com.radak.services.CommentService;
 import com.radak.services.PostService;
@@ -48,12 +49,7 @@ public class HomeController {
 	@RequestMapping(value = "/home", method = RequestMethod.GET)
 	public String home(Model model,@RequestParam("page") Optional<Integer> page,@RequestParam("size") Optional<Integer> size,@RequestParam("sort") Optional<String> sortId,@RequestParam("filter") Optional<String> filterId) {
 		var stateReminder=new StateReminder();
-		if (sortId.isPresent()) {
-			stateReminder.setSort(Integer.parseInt(sortId.get()));
-		}
-		if (filterId.isPresent()) {
-			stateReminder.setFilter(Integer.parseInt(filterId.get()));
-		}
+		stateReminder.setState(sortId, filterId);
 		int currentPage = page.orElse(1);
         int pageSize = size.orElse(5);
         Page<Post> postPage=postService.findPaginated(PageRequest.of(currentPage-1, pageSize),stateReminder.getSort(),stateReminder.getFilter());
@@ -69,10 +65,8 @@ public class HomeController {
 		model.addAttribute("categories", categories);
 		int totalPages=postPage.getTotalPages();
 		if (totalPages>0) {
-			List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
-	                .boxed()
-	                .collect(Collectors.toList());
-	            model.addAttribute("pageNumbers", pageNumbers);
+			var pageNumbers=Util.getPageNumbers(totalPages);
+	        model.addAttribute("pageNumbers", pageNumbers);
 		}
 		return "home.html";
 	}
