@@ -71,8 +71,8 @@ public class User {
 		}
 	}
 	public void deletePost(Post post) {
-		posts.remove(post);
 		post.setUser(null);
+		posts.remove(post);
 	}
 	public boolean isAdmin() {
 		for (Role r:roles) {

@@ -40,10 +40,11 @@
   <li th:each="category:${categories}" class="list-group-item">
   <div style="display:flex; justify-content: space-between;">
   <p th:text="${category.name}"></p>
-  <a th:href="@{/admin/category/update/{id}(id=${category.id})}">Update</a>
+  <a th:href="@{/admin/category/update/{id}(id=${category.id})}"><iconify-icon icon="carbon:update-now" style="color: #090;" width="40" height="40"></iconify-icon></a>
   </div>
   </li>
 </ul>
 </body>
+<script src="https://code.iconify.design/iconify-icon/1.0.0-beta.3/iconify-icon.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
 </html>

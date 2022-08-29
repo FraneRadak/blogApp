@@ -41,11 +41,10 @@
   <div style="display:flex; justify-content: space-between;">
   <p th:text="${comment.body}"></p>
   <a th:if="${comment.isOwnedBy(currentUser)}"  th:href="@{/comment/delete/{commentId}/{postId}(commentId=${comment.id},postId=${comment.post.id})}"
-															class="btn btn-primary btn-sm mb-3">Delete
-															comment</a>
+														><iconify-icon icon="bi:trash" style="color: red;" width="40" height="40"></iconify-icon></a>
 	<a th:if="${comment.isCreatedBy(currentUser)}"  th:href="@{/comment/update/{commentId}(commentId=${comment.id})}"
-															class="btn btn-primary btn-sm mb-3">Update
-															comment</a>
+															><iconify-icon icon="carbon:update-now" style="color: #090;" width="40" height="40"></iconify-icon>
+															</a>
 	<a   th:href="@{/post/{id}(id=${comment.post.id})}"><iconify-icon icon="icon-park:go-ahead" style="color: green;" width="40" height="40"></iconify-icon></a>
 															
   </div>

@@ -138,7 +138,8 @@ public class PostController {
 		var user=userService.getValidUser(username);
 		var post = postService.getOwnedPost(postId, user);
 		post.getLikes().clear();
-		user.deletePost(post);
+		var postUser=post.getUser();
+		postUser.deletePost(post);
 		if (!post.getPhotoPath().equals("none") && !postService.isPictureReferenced(post.getPhotoPath(), postId)) {
 			Util.deletePicture(post);
 		}
