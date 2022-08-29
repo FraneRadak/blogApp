@@ -2,6 +2,8 @@
 <head>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link href="static/CSS/styles.css" rel="stylesheet" />
+
 <style>
 * {
   box-sizing: border-box;
@@ -174,13 +176,6 @@ a:hover {text-decoration: none;}
     }
 }
 
-/*
-In order to invert the rotation, do the rotate* transforms in reverse order.
-
-Here, we rotated the system with rotateX(75deg) rotateY(-30deg), and then we are animating the rotation of the orbit with rotateZ(0-360deg). To reverse that, we need to reverse the last transform applied (rotateZ), then rotateY, then rotateX.
-
-The rotateX/Y reversal is easy since it's not animated, so just use its opposite (30deg, -75deg). The rotateZ is trickier since it's animating, but since it's rotating from 0 to 360, we just need to animate the satellite from 360 to 0.
-*/
 @-webkit-keyframes invert-orbit {
     0% {
         transform: rotateZ(360deg) rotateY(30deg) rotateX(-75deg);
@@ -202,21 +197,13 @@ The rotateX/Y reversal is easy since it's not animated, so just use its opposite
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
 		integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-	<meta charset="utf-8" />
-<link href="static/CSS/styles.css" rel="stylesheet" />
-		
+	<meta charset="utf-8" />		
 </style>
   </head>
   <body>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-		<div class="container">
-					<li class="nav-item"><a th:href="@{/logout}" class="nav-link">Logout</a></li>
-				</ul>
-			</div>
-		</div>
-	</nav>
 <div class="txt1">ACCOUNT SUSPENDED</div>
 <div class="txt2">This account has been suspended.</div>
+<div class="txt2"><a th:href="@{/logout}">Logout</a></div>
 <div id="orbit-system">
   <div class="system">
     <div class="satellite-orbit">
